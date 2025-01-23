@@ -1,0 +1,54 @@
+/* styles.css */
+
+/* 사이트 전체 공통 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #fdfdfd;
+}
+
+/* 버튼 스타일 (예시) */
+button {
+    background-color: #4CAF50; /* 녹색 */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin-right: 5px;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* 레이블 스타일 (예시) */
+label {
+    display: inline-block;
+    width: 130px;
+    margin-bottom: 5px;
+}
+
+/* 인풋 박스 기본 스타일 (예시) */
+input {
+    margin-bottom: 5px;
+    padding: 4px;
+}
+
+/* 메시지 표시 영역 */
+#message {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* .block, .booking-box 등 각종 박스 스타일을 통일할 수도 있음 */
+.block {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px 0;
+}
+.booking-box {
+    border: 1px solid #ccc;
+    margin: 5px 0;
+    padding: 10px;
+}

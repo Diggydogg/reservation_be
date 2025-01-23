@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'war'
-    id 'org.springframework.boot' version '2.7.8'
+    id 'org.springframework.boot' version '2.7.18'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -23,13 +23,37 @@ configurations {
 repositories {
     mavenCentral()
 }
+// 세 개의 custom war task 생성
+task war1(type: War) {
+    archiveFileName = 'diggydog_1.war'
+}
 
+task war2(type: War) {
+    archiveFileName = 'diggydog_2.war'
+}
+
+task war3(type: War) {
+    archiveFileName = 'diggydog_3.war'
+}
+
+// 모든 war 파일을 한 번에 생성하는 task
+task buildAllWars {
+    dependsOn war1, war2, war3
+}
+
+bootWar {
+    enabled = false
+}
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-mustache'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15' //swagger
+    implementation 'mysql:mysql-connector-java:8.0.33'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
