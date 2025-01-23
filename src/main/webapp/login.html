@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login Page</title>
+    <!-- 공통 CSS 링크 -->
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<h1>Login Page</h1>
+<div>
+    <label for="userId">User ID:</label>
+    <input type="text" id="userId" />
+</div>
+<div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" />
+</div>
+<button id="loginBtn">Log In</button>
+
+<div id="message"></div>
+
+<!-- 공통 JS -->
+<script src="app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', initLogin);
+</script>
+</body>
+</html>
