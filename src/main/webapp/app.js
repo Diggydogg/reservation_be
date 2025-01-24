@@ -13,7 +13,7 @@ function getLoggedInUserId() {
 
 function logout() {
     localStorage.removeItem("loggedInUserId");
-    window.location.href = "/login.html";
+    window.location.href = "/diggydog/login.html";
 }
 
 function showMessage(selector, msg, isError) {
@@ -31,7 +31,7 @@ function showMessage(selector, msg, isError) {
 function initLogin() {
     // 이미 로그인 중이면 index.html로
     if (isLoggedIn()) {
-        window.location.href = "/index.html";
+        window.location.href = "/diggydog/index.html";
         return;
     }
 
@@ -41,25 +41,45 @@ function initLogin() {
         loginBtn.addEventListener('click', login);
     }
 
+    // 회원가입 버튼 이벤트 추가
+    const signupBtn = document.getElementById('signupBtn');
+    if (signupBtn) {
+        signupBtn.addEventListener('click', () => {
+            window.location.href = 'signup.html';
+        });
+    }
+
 }
 
 async function login() {
-    const userId = document.getElementById('userId').value.trim();
+    const user_id = document.getElementById('user_id').value.trim();
     const password = document.getElementById('password').value;
 
-    if (!userId || !password) {
+    if (!user_id || !password) {
         showMessage('#message', "Please fill in both userId and password.", true);
         return;
     }
 
     try {
         // 서버에 로그인 요청
-        const payload = { userId, password };
-        const res = await fetch('/api/user/login', {
+        const payload = { user_id, password };
+        const url = `http://walab.handong.edu:8080/diggydog_3/api/user/login?user_id=${encodeURIComponent(user_id)}&password=${encodeURIComponent(password)}`;
+        const res = await fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'application/json' }  // GET 요청에서는 필요 없음, 제거 가능
         });
+
+
+        // const res = await fetch('http://walab.handong.edu:8080/diggydog_3/api/user/login', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(payload),
+        // });
+
+        // const res = await fetch(`http://walab.handong.edu:8080/diggydog_3/api/user/login?userId=${userId}&password=${password}`, {
+        //     method: 'GET',
+        //     headers: { 'Content-Type': 'application/json' }
+        // });
 
         const result = await res.json();
         // 예:
@@ -76,7 +96,7 @@ async function login() {
             localStorage.setItem("loggedInUserId", userData.userId);
 
             // index.html 로 이동
-            window.location.href = "/index.html";
+            window.location.href = "/diggydog/index.html";
         } else {
             // res.ok가 false인 경우, 상태코드별 처리
             // 404 -> User not found
@@ -89,6 +109,183 @@ async function login() {
     }
 }
 
+
+/***********************************************************
+ * [] 회원가입 페이지 로직 (기존 signup.html 용)
+ ***********************************************************/
+
+// 회원가입 페이지 초기화
+function initSignUp() {
+    const checkAvailabilityBtn = document.getElementById('checkAvailabilityBtn');
+    if (checkAvailabilityBtn) {
+        checkAvailabilityBtn.addEventListener('click', checkUserIdAvailability);
+    }
+
+    const registerBtn = document.getElementById('registerBtn');
+    if (registerBtn) {
+        registerBtn.addEventListener('click', registerUser);
+    }
+}
+
+// 유저 ID 중복 확인
+async function checkUserIdAvailability() {
+    const userId = document.getElementById('newUserId').value.trim();
+    if (!userId) {
+        showMessage('#availabilityMessage', 'Please enter a user ID.', true);
+        return;
+    }
+
+    try {
+        const res = await fetch(`http://walab.handong.edu:8080/diggydog_3/api/user/check-availability?userId=${encodeURIComponent(userId)}`, {
+            method: 'GET',
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+            showMessage('#availabilityMessage', 'User ID is available.', false);
+        } else {
+            showMessage('#availabilityMessage', 'User ID is already taken.', true);
+        }
+    } catch (error) {
+        showMessage('#availabilityMessage', 'Server error occurred.', true);
+    }
+}
+
+// 회원가입 처리
+async function registerUser() {
+    const newUserName = document.getElementById('newUserName').value.trim();
+    const newUserId = document.getElementById('newUserId').value.trim();
+    const newPassword = document.getElementById('newPassword').value.trim();
+    const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+    if (!newUserName||!newUserId || !newPassword || !confirmPassword) {
+        showMessage('#signupMessage', 'Please fill in all fields.', true);
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        showMessage('#signupMessage', 'Passwords do not match.', true);
+        return;
+    }
+
+    try {
+        const payload = {userName: newUserName, userId: newUserId, password: newPassword };
+        const res = await fetch('http://walab.handong.edu:8080/diggydog_3/api/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+            showMessage('#signupMessage', 'Registration successful! Please login.', false);
+            setTimeout(() => {
+                window.location.href = "/diggydog/login.html";
+            }, 2000);
+        } else {
+            showMessage('#signupMessage', result.message || 'Registration failed.', true);
+        }
+    } catch (error) {
+        showMessage('#signupMessage', `Server Error: ${error.message}`, true);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    // 인덱스 페이지 버튼 이벤트 리스너
+    const createBookingBtn = document.getElementById('createBookingBtn');
+    if (createBookingBtn) {
+        createBookingBtn.addEventListener('click', () => {
+            window.location.href = "createBooking.html";
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    // 인덱스 페이지 버튼 이벤트 리스너
+    const createBookingBtn = document.getElementById('createBookingBtn');
+    if (createBookingBtn) {
+        createBookingBtn.addEventListener('click', () => {
+            window.location.href = "createBooking.html";
+        });
+    }
+});
+
+
+/***********************************************************
+ * [] 부킹 가입 페이지 로직 ( 기존 createBooking.html 용 )
+ ***********************************************************/
+
+
+
+
+// Create Booking 페이지 초기화
+function initCreateBooking() {
+    const createBtn = document.getElementById('createBookingBtn');
+    if (createBtn) {
+        createBtn.addEventListener('click', createBooking);
+    }
+
+    // 시/분 select 옵션 채우기
+    populateHourMinuteSelects();
+}
+
+
+// 예약 생성 처리
+async function createBooking() {
+    const dateValue = document.getElementById('date').value.trim();
+    const hourValue = document.getElementById('hourSelect').value;
+    const minuteValue = document.getElementById('minuteSelect').value;
+    const bookingInfo = document.getElementById('bookingInfo').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const noPeople = document.getElementById('noPeople').value.trim();
+    const userId = localStorage.getItem("loggedInUserId");
+
+    if (!dateValue || !bookingInfo || !name || !noPeople) {
+        showMessage('#message', 'Please fill in all fields.', true);
+        return;
+    }
+
+    // 시간 형식 설정 (HH:mm)
+    //const bookingTime = `${hourValue.padStart(2, '0')}:${minuteValue.padStart(2, '0')}`;
+    const formattedHour = String(hourValue).padStart(2, '0');
+    const formattedMinute = String(minuteValue).padStart(2, '0');
+    const bookingTime = `${formattedHour}:${formattedMinute}`;
+
+    const payload = {
+        userId,
+        date: dateValue,
+        bookingTime,
+        bookingInfo,
+        name,
+        noPeople: parseInt(noPeople, 10)
+    };
+
+    try {
+        const res = await fetch('http://walab.handong.edu:8080/diggydog_3/api/booking', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+            showMessage('#message', 'Booking created successfully!', false);
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 2000);
+        } else {
+            showMessage('#message', result.message || 'Error creating booking.', true);
+        }
+    } catch (error) {
+        showMessage('#message', `Server error: ${error.message}`, true);
+    }
+}
+
+
+
 /***********************************************************
  * [2] 인덱스 페이지 로직 (기존 index.html 용)
  ***********************************************************/
@@ -96,7 +293,7 @@ async function login() {
 function initIndex() {
     // 1. 로그인 여부 체크
     if (!isLoggedIn()) {
-        window.location.href = "/login.html";
+        window.location.href = "/diggydog/login.html";
         return;
     }
 
@@ -118,7 +315,7 @@ function initIndex() {
     if (manageBtn) {
         manageBtn.addEventListener('click', () => {
             // 페이지 이동
-            window.location.href = "/manageBooking.html";
+            window.location.href = "/diggydog/manageBooking.html";
         });
     }
 
@@ -128,7 +325,7 @@ function initIndex() {
 
 async function fetchUserBookings(userId) {
     try {
-        const res = await fetch(`/api/booking/get?user_id=${encodeURIComponent(userId)}`);
+        const res = await fetch(`http://walab.handong.edu:8080/diggydog_3/api/booking/get?user_id=${encodeURIComponent(userId)}`);
         if (!res.ok) {
             throw new Error(`Failed to fetch bookings. Status: ${res.status}`);
         }
@@ -175,7 +372,7 @@ function displayBookings(bookings) {
     updateButtons.forEach((btn) => {
         btn.addEventListener('click', (e) => {
             const bookingId = e.target.getAttribute('data-booking-id');
-            window.location.href = `/manageBooking.html?bookingId=${encodeURIComponent(bookingId)}`;
+            window.location.href = `/diggydog/manageBooking.html?bookingId=${encodeURIComponent(bookingId)}`;
         });
     });
 
@@ -203,7 +400,7 @@ function displayBookings(bookings) {
  ***********************************************************/
 function initManageBooking() {
     if (!isLoggedIn()) {
-        window.location.href = "/login.html";
+        window.location.href = "/diggydog/login.html";
         return;
     }
 
@@ -259,7 +456,7 @@ function initManageBooking() {
  */
 async function fetchBookingDetails(bookingId) {
     try {
-        const response = await fetch(`/api/booking/getBookingId?booking_id=${bookingId}`, {
+        const response = await fetch(`http://walab.handong.edu:8080/diggydog_3/api/booking/getBookingId?booking_id=${bookingId}`, {
             method: 'GET'
         });
         if (!response.ok) {
@@ -380,7 +577,7 @@ async function updateBooking() {
     };
 
     try {
-        const res = await fetch(`/api/booking/updateBooking?booking_id=${encodeURIComponent(bookingId)}`, {
+        const res = await fetch(`http://walab.handong.edu:8080/diggydog_3/api/booking/updateBooking?booking_id=${encodeURIComponent(bookingId)}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -408,7 +605,7 @@ async function deleteBooking() {
     }
 
     try {
-        const res = await fetch(`/api/booking/deleteBooking?bookingId=${encodeURIComponent(bookingId)}`, {
+        const res = await fetch(`http://walab.handong.edu:8080/diggydog_3/api/booking/deleteBooking?bookingId=${encodeURIComponent(bookingId)}`, {
             method: 'DELETE'
         });
         const result = await res.json();

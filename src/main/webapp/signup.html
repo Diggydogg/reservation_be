@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<h1>Sign Up</h1>
+
+<label for="newUserName">User name:</label>
+<input type="text" id="newUserName" placeholder="Enter a User Name" /><br />
+
+
+<label for="newUserId">User ID:</label>
+<input type="text" id="newUserId" placeholder="Enter a User ID" /><br />
+<button id="checkAvailabilityBtn">Check Availability</button>
+<p id="availabilityMessage"></p>
+
+<label for="newPassword">Password:</label>
+<input type="password" id="newPassword" placeholder="Enter a Password" /><br />
+
+<label for="confirmPassword">Confirm Password:</label>
+<input type="password" id="confirmPassword" placeholder="Confirm Password" /><br />
+
+<button id="registerBtn">Sign Up</button>
+
+<p id="signupMessage"></p>
+
+<p>Already have an account? <a href="/diggydog/login.html">Login here</a></p>
+
+<script src="app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', initSignUp);
+</script>
+</body>
+</html>

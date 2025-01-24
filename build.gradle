@@ -25,14 +25,17 @@ repositories {
 }
 // 세 개의 custom war task 생성
 task war1(type: War) {
+    dependsOn war with war
     archiveFileName = 'diggydog_1.war'
 }
 
 task war2(type: War) {
+    dependsOn war with war
     archiveFileName = 'diggydog_2.war'
 }
 
 task war3(type: War) {
+    dependsOn war with war
     archiveFileName = 'diggydog_3.war'
 }
 

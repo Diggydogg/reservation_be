@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Manage Booking</title>
-    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="/diggydog/css/styles.css" />
 </head>
 <body>
 <h1>Manage Booking (Update / Delete)</h1>
-<button id="logoutBtn">Logout</button>
-<div id="userInfo"></div>
 
+<div id="userInfo"></div>
+<div>
+<button onclick="window.location.href='/diggydog/index.html'">Back to List</button>
+</div>
 <div class="block">
     <h2>Update / Delete Booking</h2>
     <!-- Booking ID & User ID를 화면에 보이지 않도록 hidden input으로 처리 -->
@@ -40,7 +42,9 @@
 
 <div id="message"></div>
 
-<script src="app.js"></script>
+<button id="logoutBtn">Logout</button>
+
+<script src="/diggydog/app.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', initManageBooking);
 </script>
